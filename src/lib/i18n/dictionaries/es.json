@@ -1,0 +1,108 @@
+{
+  "nav": {
+    "games": "Juegos",
+    "leaderboards": "Rankings",
+    "profile": "Perfil",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión",
+    "login": "Entrar con Discord"
+  },
+  "home": {
+    "title": "JUEGA. COMPITE. DIFERENCIATE.",
+    "subtitle": "Partidas rápidas, rankings reales. Entra en un arcade retro pensado para el ahora.",
+    "playNow": "Jugar ahora",
+    "exploreGames": "Explorar juegos",
+    "featuredTitle": "Juegos destacados",
+    "topPlayers": "Mejores jugadores",
+    "ctaTitle": "Crea tu cuenta. Empieza a jugar.",
+    "ctaButton": "Crear cuenta con Discord",
+    "play": "Jugar"
+  },
+  "games": {
+    "title": "Juegos",
+    "subtitle": "Todos los minijuegos de DIFF. Elige uno, carga en segundos.",
+    "difficulty": "Dificultad",
+    "players": "Jugadores",
+    "bestScore": "Mejor puntuación",
+    "play": "JUGAR"
+  },
+  "snake": {
+    "title": "Snake",
+    "score": "Puntos",
+    "best": "Mejor",
+    "pause": "Pausa",
+    "resume": "Continuar",
+    "restart": "Reiniciar",
+    "gameOver": "Fin de la partida",
+    "start": "Pulsa una dirección para empezar",
+    "newBest": "¡Nueva mejor puntuación!"
+  },
+  "connect4": {
+    "title": "Conecta 4",
+    "yourTurn": "Tu turno",
+    "cpuTurn": "La CPU está pensando...",
+    "youWin": "¡Has ganado!",
+    "cpuWins": "Gana la CPU",
+    "draw": "Empate",
+    "restart": "Jugar de nuevo",
+    "difficulty": "Dificultad",
+    "easy": "Fácil",
+    "normal": "Normal",
+    "hard": "Difícil"
+  },
+  "leaderboards": {
+    "title": "Rankings",
+    "subtitle": "Clasificación global de todos los juegos de DIFF.",
+    "global": "Global",
+    "allTime": "Siempre",
+    "monthly": "Mensual",
+    "weekly": "Semanal",
+    "rank": "Puesto",
+    "player": "Jugador",
+    "highScore": "Mejor puntuación",
+    "wins": "Victorias",
+    "winRate": "% Victorias"
+  },
+  "profile": {
+    "joined": "Se unió",
+    "gamesPlayed": "Partidas jugadas",
+    "wins": "Victorias",
+    "losses": "Derrotas",
+    "totalScore": "Puntuación total",
+    "snakeHighScore": "Mejor puntuación en Snake",
+    "connect4Wins": "Victorias en Conecta 4",
+    "currentStreak": "Racha actual",
+    "achievements": "Logros",
+    "level": "Nivel"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "account": "Cuenta",
+    "appearance": "Apariencia",
+    "language": "Idioma",
+    "privacy": "Privacidad",
+    "username": "Nombre de usuario DIFF",
+    "theme": "Tema",
+    "animations": "Animaciones",
+    "sounds": "Sonidos",
+    "publicProfile": "Perfil público",
+    "showStats": "Mostrar estadísticas",
+    "save": "Guardar cambios",
+    "logout": "Cerrar sesión"
+  },
+  "footer": {
+    "about": "Acerca de",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "discord": "Discord"
+  },
+  "notFound": {
+    "title": "GAME OVER",
+    "subtitle": "Parece que esta página no existe.",
+    "button": "Volver a DIFF"
+  },
+  "about": {
+    "title": "Acerca de DIFF",
+    "body": "DIFF es una plataforma de minijuegos online centrada en partidas rápidas, competición real y una comunidad que vuelve a por otra partida más. Juega una ronda, sube en el ranking y descubre en qué te diferencias."
+  }
+}

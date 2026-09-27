@@ -1,0 +1,108 @@
+{
+  "nav": {
+    "games": "Games",
+    "leaderboards": "Leaderboards",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "login": "Login with Discord"
+  },
+  "home": {
+    "title": "PLAY. COMPETE. DIFFER.",
+    "subtitle": "Fast rounds, real rankings. Jump into a retro arcade built for right now.",
+    "playNow": "Play now",
+    "exploreGames": "Explore games",
+    "featuredTitle": "Featured games",
+    "topPlayers": "Top players",
+    "ctaTitle": "Create your account. Start playing.",
+    "ctaButton": "Create account with Discord",
+    "play": "Play"
+  },
+  "games": {
+    "title": "Games",
+    "subtitle": "Every minigame on DIFF. Pick one, it loads in seconds.",
+    "difficulty": "Difficulty",
+    "players": "Players",
+    "bestScore": "Best score",
+    "play": "PLAY"
+  },
+  "snake": {
+    "title": "Snake",
+    "score": "Score",
+    "best": "Best",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart",
+    "gameOver": "Game Over",
+    "start": "Press any direction to start",
+    "newBest": "New best score!"
+  },
+  "connect4": {
+    "title": "Connect 4",
+    "yourTurn": "Your turn",
+    "cpuTurn": "CPU is thinking...",
+    "youWin": "You win!",
+    "cpuWins": "CPU wins",
+    "draw": "It's a draw",
+    "restart": "Play again",
+    "difficulty": "Difficulty",
+    "easy": "Easy",
+    "normal": "Normal",
+    "hard": "Hard"
+  },
+  "leaderboards": {
+    "title": "Leaderboards",
+    "subtitle": "Global rankings across every DIFF game.",
+    "global": "Global",
+    "allTime": "All time",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "rank": "Rank",
+    "player": "Player",
+    "highScore": "High Score",
+    "wins": "Wins",
+    "winRate": "Win Rate"
+  },
+  "profile": {
+    "joined": "Joined",
+    "gamesPlayed": "Games played",
+    "wins": "Wins",
+    "losses": "Losses",
+    "totalScore": "Total score",
+    "snakeHighScore": "Snake high score",
+    "connect4Wins": "Connect 4 wins",
+    "currentStreak": "Current streak",
+    "achievements": "Achievements",
+    "level": "Level"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "appearance": "Appearance",
+    "language": "Language",
+    "privacy": "Privacy",
+    "username": "DIFF username",
+    "theme": "Theme",
+    "animations": "Animations",
+    "sounds": "Sounds",
+    "publicProfile": "Public profile",
+    "showStats": "Show statistics",
+    "save": "Save changes",
+    "logout": "Log out"
+  },
+  "footer": {
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "discord": "Discord"
+  },
+  "notFound": {
+    "title": "GAME OVER",
+    "subtitle": "Looks like this page doesn't exist.",
+    "button": "Return to DIFF"
+  },
+  "about": {
+    "title": "About DIFF",
+    "body": "DIFF is an online minigames platform built around fast rounds, real competition and a community that keeps coming back for one more run. Play a quick match, climb the leaderboard, and see how you differ."
+  }
+}
