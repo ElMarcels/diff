@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSession, ensureBootstrapRole } from "@/lib/auth/session";
 import { registerAccount } from "@/lib/auth/service";
-import { jsonError, readJson } from "@/lib/auth/guards";
+import { jsonError, readJson, withErrorHandling } from "@/lib/auth/guards";
 import { fieldErrors, registerSchema } from "@/lib/auth/validation";
 
 /**
@@ -10,7 +10,7 @@ import { fieldErrors, registerSchema } from "@/lib/auth/validation";
  * Creates a native DIFF account (no external identity provider) and signs the
  * user straight in. The OWNER_EMAIL address is promoted to platform owner.
  */
-export async function POST(req: Request) {
+export const POST = withErrorHandling(async (req: Request) => {
   const body = await readJson(req);
   if (!body) return jsonError(400, "Invalid JSON body.");
 
@@ -37,4 +37,4 @@ export async function POST(req: Request) {
       role,
     },
   });
-}
+});

@@ -5,7 +5,7 @@ import { users } from "@/lib/db/schema";
 import { getSessionUser, revokeOtherSessions, SessionUser } from "@/lib/auth/session";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { isOwner } from "@/lib/auth/roles";
-import { jsonError, readJson, requireUser, isResponse } from "@/lib/auth/guards";
+import { isResponse, jsonError, readJson, requireUser, withErrorHandling } from "@/lib/auth/guards";
 import { fieldErrors, passwordChangeSchema, profileSchema } from "@/lib/auth/validation";
 
 export const dynamic = "force-dynamic";
@@ -15,12 +15,12 @@ export const dynamic = "force-dynamic";
  * PATCH /api/auth/me   → update profile preferences
  * PUT   /api/auth/me/password → change password (revokes other sessions)
  */
-export async function GET() {
+export const GET = withErrorHandling(async () => {
   const user = await getSessionUser({ syncCookie: true });
   return NextResponse.json({ user }, { headers: { "Cache-Control": "no-store" } });
-}
+});
 
-export async function PATCH(req: Request) {
+export const PATCH = withErrorHandling(async (req: Request) => {
   const guard = await requireUser();
   if (isResponse(guard)) return guard;
   const user = guard;
@@ -57,9 +57,9 @@ export async function PATCH(req: Request) {
     .returning();
 
   return NextResponse.json({ ok: true, user: serialize(updated) });
-}
+});
 
-export async function PUT(req: Request) {
+export const PUT = withErrorHandling(async (req: Request) => {
   const guard = await requireUser();
   if (isResponse(guard)) return guard;
   const user = guard;
@@ -91,7 +91,7 @@ export async function PUT(req: Request) {
 
   await revokeOtherSessions(user.id);
   return NextResponse.json({ ok: true });
-}
+});
 
 function serialize(row: typeof users.$inferSelect): SessionUser {
   return {

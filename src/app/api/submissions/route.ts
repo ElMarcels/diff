@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isDbConfigured } from "@/lib/db/client";
-import { dbUnavailable, isResponse, jsonError, readJson, requireModerator, requireUser } from "@/lib/auth/guards";
+import { dbUnavailable, isResponse, jsonError, readJson, requireModerator, requireUser, withErrorHandling } from "@/lib/auth/guards";
 import { fieldErrors, submissionCreateSchema } from "@/lib/auth/validation";
 import { createSubmission, listSubmissions } from "@/lib/submissions/service";
 
@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
  *
  * POST /api/submissions → new submission (draft or straight into the queue)
  */
-export async function GET(req: Request) {
+export const GET = withErrorHandling(async (req: Request) => {
   const guard = await requireUser();
   if (isResponse(guard)) return guard;
   const user = guard;
@@ -31,9 +31,9 @@ export async function GET(req: Request) {
 
   const rows = await listSubmissions(user, "mine");
   return NextResponse.json({ submissions: rows });
-}
+});
 
-export async function POST(req: Request) {
+export const POST = withErrorHandling(async (req: Request) => {
   const guard = await requireUser();
   if (isResponse(guard)) return guard;
   if (!isDbConfigured()) return dbUnavailable();
@@ -49,4 +49,4 @@ export async function POST(req: Request) {
   const result = await createSubmission(guard, parsed.data);
   if (!result.ok) return jsonError(result.status, result.error, { fields: result.fields });
   return NextResponse.json({ ok: true, submission: result.data }, { status: 201 });
-}
+});

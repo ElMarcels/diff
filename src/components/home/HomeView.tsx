@@ -3,11 +3,12 @@
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Button } from "@/components/Button";
 import { GameGrid } from "@/components/GameGrid";
+import { DatabaseNotice } from "@/components/games/DatabaseNotice";
 import { Leaderboard } from "@/components/Leaderboard";
 import { MOCK_LEADERBOARD_SNAKE } from "@/lib/mock-data";
 import { GameMeta } from "@/types";
 
-export default function HomePage({ games }: { games: GameMeta[] }) {
+export default function HomePage({ games, dbError }: { games: GameMeta[]; dbError?: string | null }) {
   const { t } = useLocale();
 
   return (
@@ -44,6 +45,7 @@ export default function HomePage({ games }: { games: GameMeta[] }) {
       {/* Featured games */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <h2 className="mb-6 text-lg font-semibold text-white">{t.home.featuredTitle}</h2>
+        {dbError ? <DatabaseNotice message={dbError} /> : null}
         <GameGrid games={games} />
       </section>
 

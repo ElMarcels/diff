@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { authenticate } from "@/lib/auth/service";
 import { createSession, ensureBootstrapRole } from "@/lib/auth/session";
-import { jsonError, readJson } from "@/lib/auth/guards";
+import { jsonError, readJson, withErrorHandling } from "@/lib/auth/guards";
 import { fieldErrors, loginSchema } from "@/lib/auth/validation";
 
 /** POST /api/auth/login */
-export async function POST(req: Request) {
+export const POST = withErrorHandling(async (req: Request) => {
   const body = await readJson(req);
   if (!body) return jsonError(400, "Invalid JSON body.");
 
@@ -32,4 +32,4 @@ export async function POST(req: Request) {
       role,
     },
   });
-}
+});

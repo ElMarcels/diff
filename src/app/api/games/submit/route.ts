@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth/session";
 import { getDb, isDbConfigured } from "@/lib/db/client";
+import { withErrorHandling } from "@/lib/auth/guards";
 import { validateScore } from "@/lib/services/validate-score";
 import { xpForResult } from "@/lib/xp";
 import { games, gameSessions, gameStats, users } from "@/lib/db/schema";
@@ -15,7 +16,7 @@ import { SubmitScorePayload } from "@/types";
  * re-validates it against the reported match metadata, and only then
  * updates gameStats / awards XP.
  */
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandling(async (req: NextRequest) => {
   const user = await getSessionUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
@@ -104,4 +105,4 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({ ok: true, persisted: true, xpGain });
-}
+});
