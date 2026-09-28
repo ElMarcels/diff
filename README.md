@@ -101,6 +101,16 @@ thin and the service is the real authorization boundary.
    npm run db:migrate    # applies them to DATABASE_URL
    npm run db:seed       # seeds the `games` and `achievements` tables
    ```
+   The `db:*` scripts read `.env.local` automatically. If you would rather not
+   copy the connection string by hand, pull it from Vercel first:
+   ```bash
+   vercel link                              # once, ties this folder to the project
+   vercel env pull .env.local                # writes DATABASE_URL into .env.local
+   npm run db:migrate
+   ```
+   `db:migrate` prints the host and database it is about to change (never the
+   password) so you can confirm you are pointed at the right one. It is
+   idempotent: drizzle records applied migrations in `__drizzle_migrations`.
 4. Create the platform owner account:
    ```bash
    OWNER_PASSWORD='choose-a-strong-one' npm run db:owner

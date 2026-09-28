@@ -10,11 +10,12 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/lib/db/migrate.ts",
-    "db:seed": "tsx src/lib/db/seed.ts",
-    "db:owner": "tsx src/lib/db/bootstrap-owner.ts"
+    "db:migrate": "tsx --env-file-if-exists=.env.local src/lib/db/migrate.ts",
+    "db:seed": "tsx --env-file-if-exists=.env.local src/lib/db/seed.ts",
+    "db:owner": "tsx --env-file-if-exists=.env.local src/lib/db/bootstrap-owner.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "drizzle-orm": "0.31.2",
     "framer-motion": "11.3.19",
     "lucide-react": "^1.48.0",
