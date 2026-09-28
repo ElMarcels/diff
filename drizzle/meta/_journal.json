@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790527442331,
+      "tag": "0000_gorgeous_william_stryker",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790602203515,
+      "tag": "0001_accounts_and_review_queue",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790602207198,
+      "tag": "0002_drop_legacy_discord_id",
+      "breakpoints": true
+    }
+  ]
+}

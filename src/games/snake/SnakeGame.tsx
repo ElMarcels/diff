@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/client";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/Button";
@@ -34,7 +34,7 @@ const HIGH_SCORE_KEY = "diff_snake_high_score"; // per-viewer convenience only; 
 
 export function SnakeGame() {
   const { t } = useLocale();
-  const { data: session } = useSession();
+  const { user } = useSession();
   const { push } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -73,7 +73,7 @@ export function SnakeGame() {
 
   const submitScore = useCallback(
     async (finalScore: number) => {
-      if (!session?.user) return;
+      if (!user) return;
       const durationMs = Date.now() - startTimeRef.current;
       try {
         const res = await fetch("/api/games/submit", {
@@ -94,7 +94,7 @@ export function SnakeGame() {
         // Network errors here shouldn't block the player from seeing Game Over.
       }
     },
-    [session, push]
+    [user, push]
   );
 
   const endGame = useCallback(

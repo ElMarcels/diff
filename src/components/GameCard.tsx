@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ExternalLink, Upload } from "lucide-react";
 import { GameMeta } from "@/types";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
@@ -11,6 +12,9 @@ const gameGlyph: Record<string, string> = {
 
 export function GameCard({ game, highScore }: { game: GameMeta; highScore?: number }) {
   const { t } = useLocale();
+  const externalUrl = game.playUrl ?? undefined;
+  const isExternal = Boolean(externalUrl);
+
   return (
     <div className="clip-notch group relative flex flex-col justify-between border border-surface-border bg-surface p-6 transition-all duration-200 hover:border-neon-purple hover:shadow-glow-purple animate-rise-in">
       <div>
@@ -34,14 +38,31 @@ export function GameCard({ game, highScore }: { game: GameMeta; highScore?: numb
             </span>
           )}
         </div>
+
+        {isExternal && (
+          <p className="mt-3 flex items-center gap-1.5 text-[11px] text-neon-purple">
+            <Upload size={12} /> {t.games.communityGame}
+          </p>
+        )}
       </div>
 
-      <Link
-        href={`/games/${game.slug}`}
-        className="clip-notch-sm mt-6 inline-flex items-center justify-center bg-neon-magenta py-2.5 text-sm font-semibold text-black transition-shadow hover:shadow-glow-magenta focus-ring"
-      >
-        {t.games.play}
-      </Link>
+      {isExternal ? (
+        <a
+          href={externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="clip-notch-sm mt-6 inline-flex items-center justify-center gap-2 bg-neon-magenta py-2.5 text-sm font-semibold text-black transition-shadow hover:shadow-glow-magenta focus-ring"
+        >
+          {t.games.play} <ExternalLink size={14} />
+        </a>
+      ) : (
+        <Link
+          href={`/games/${game.slug}`}
+          className="clip-notch-sm mt-6 inline-flex items-center justify-center bg-neon-magenta py-2.5 text-sm font-semibold text-black transition-shadow hover:shadow-glow-magenta focus-ring"
+        >
+          {t.games.play}
+        </Link>
+      )}
     </div>
   );
 }

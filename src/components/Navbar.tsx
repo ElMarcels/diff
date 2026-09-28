@@ -2,21 +2,24 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShieldCheck, Upload, Wrench } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "./Button";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { UserAvatar } from "./UserAvatar";
+import { useAuth } from "@/lib/auth/client";
 
 export function Navbar() {
-  const { data: session } = useSession();
+  const { user, status, signOut, isModerator, isOwner } = useAuth();
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
 
   const links = [
     { href: "/games", label: t.nav.games },
     { href: "/leaderboards", label: t.nav.leaderboards },
+    { href: "/creator", label: t.nav.creator },
+    ...(isModerator ? [{ href: "/moderation", label: t.nav.moderation }] : []),
+    ...(isOwner ? [{ href: "/owner", label: t.nav.owner }] : []),
   ];
 
   return (
@@ -39,11 +42,17 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          {session?.user ? (
-            <UserMenu username={(session.user as any).username || session.user.name || "player"} avatar={session.user.image} />
+          {user ? (
+            <UserMenu
+              username={user.username}
+              avatar={user.avatar}
+              isModerator={isModerator}
+              isOwner={isOwner}
+              onSignOut={() => signOut()}
+            />
           ) : (
-            <Button variant="primary" onClick={() => signIn("discord")}>
-              {t.nav.login}
+            <Button href="/login" variant="primary">
+              {status === "loading" ? t.common.loading : t.nav.login}
             </Button>
           )}
         </div>
@@ -65,9 +74,9 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {session?.user ? (
+            {user ? (
               <>
-                <Link href={`/profile/${(session.user as any).username}`} className="py-1 text-white/90">
+                <Link href={`/profile/${user.username}`} className="py-1 text-white/90">
                   {t.nav.profile}
                 </Link>
                 <Link href="/settings" className="py-1 text-white/90">
@@ -78,7 +87,7 @@ export function Navbar() {
                 </button>
               </>
             ) : (
-              <Button variant="primary" className="mt-2 w-full" onClick={() => signIn("discord")}>
+              <Button href="/login" variant="primary" className="mt-2 w-full">
                 {t.nav.login}
               </Button>
             )}
@@ -89,20 +98,35 @@ export function Navbar() {
   );
 }
 
-function UserMenu({ username, avatar }: { username: string; avatar?: string | null }) {
+function UserMenu({
+  username,
+  avatar,
+  isModerator,
+  isOwner,
+  onSignOut,
+}: {
+  username: string;
+  avatar?: string | null;
+  isModerator: boolean;
+  isOwner: boolean;
+  onSignOut: () => void;
+}) {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
+
   return (
     <div className="relative">
-      <button
-        className="flex items-center gap-2 rounded-full focus-ring"
-        onClick={() => setOpen((v) => !v)}
-      >
+      <button className="flex items-center gap-2 rounded-full focus-ring" onClick={() => setOpen((v) => !v)}>
         <UserAvatar src={avatar} alt={username} size={32} />
         <span className="text-sm text-white/90">{username}</span>
+        {isOwner ? (
+          <ShieldCheck size={14} className="text-neon-purple" />
+        ) : isModerator ? (
+          <Wrench size={14} className="text-neon-cyan" />
+        ) : null}
       </button>
       {open && (
-        <div className="clip-notch-sm absolute right-0 top-11 w-48 border border-surface-border bg-surface-raised p-2 shadow-glow-soft">
+        <div className="clip-notch-sm absolute right-0 top-11 w-52 border border-surface-border bg-surface-raised p-2 shadow-glow-soft">
           <Link
             href={`/profile/${username}`}
             className="block rounded px-3 py-2 text-sm text-white/90 hover:bg-surface-border"
@@ -110,6 +134,31 @@ function UserMenu({ username, avatar }: { username: string; avatar?: string | nu
           >
             {t.nav.profile}
           </Link>
+          <Link
+            href="/creator"
+            className="flex items-center gap-2 rounded px-3 py-2 text-sm text-white/90 hover:bg-surface-border"
+            onClick={() => setOpen(false)}
+          >
+            <Upload size={13} /> {t.nav.creator}
+          </Link>
+          {isModerator && (
+            <Link
+              href="/moderation"
+              className="flex items-center gap-2 rounded px-3 py-2 text-sm text-white/90 hover:bg-surface-border"
+              onClick={() => setOpen(false)}
+            >
+              <Wrench size={13} /> {t.nav.moderation}
+            </Link>
+          )}
+          {isOwner && (
+            <Link
+              href="/owner"
+              className="flex items-center gap-2 rounded px-3 py-2 text-sm text-neon-purple hover:bg-surface-border"
+              onClick={() => setOpen(false)}
+            >
+              <ShieldCheck size={13} /> {t.nav.owner}
+            </Link>
+          )}
           <Link
             href="/settings"
             className="block rounded px-3 py-2 text-sm text-white/90 hover:bg-surface-border"
@@ -119,7 +168,7 @@ function UserMenu({ username, avatar }: { username: string; avatar?: string | nu
           </Link>
           <button
             className="block w-full rounded px-3 py-2 text-left text-sm text-white/60 hover:bg-surface-border"
-            onClick={() => signOut()}
+            onClick={onSignOut}
           >
             {t.nav.logout}
           </button>

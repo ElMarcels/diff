@@ -1,36 +1,70 @@
 "use client";
 
-import { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { locales } from "@/lib/i18n/config";
 import { Button } from "@/components/Button";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useToast } from "@/components/Toast";
+import { Field, FormError } from "@/components/forms/Form";
+import { useAuth } from "@/lib/auth/client";
+import { apiFetch } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
 
 const localeLabels: Record<string, string> = { en: "English", es: "Español" };
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
+  const { user, status, signOut, refresh } = useAuth();
   const { t, locale, setLocale } = useLocale();
   const { push } = useToast();
+  const router = useRouter();
 
-  const [username, setUsername] = useState((session?.user as any)?.username || "");
+  const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [animations, setAnimations] = useState(true);
   const [sounds, setSounds] = useState(false);
   const [publicProfile, setPublicProfile] = useState(true);
-  const [showStats, setShowStats] = useState(true);
+  const [fields, setFields] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  function handleSave() {
-    // TODO: wire to PATCH /api/users/me once DATABASE_URL is configured.
-    push(t.settings.save, "success");
+  useEffect(() => {
+    if (!user) return;
+    setUsername(user.username);
+    setDisplayName(user.displayName);
+    setAnimations(user.animationsEnabled);
+    setSounds(user.soundEnabled);
+    setPublicProfile(user.publicProfile);
+  }, [user]);
+
+  async function handleSave() {
+    setBusy(true);
+    setError(null);
+    setFields({});
+    const res = await apiFetch<{ user: unknown }>("/api/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ username, displayName, animationsEnabled: animations, soundEnabled: sounds, publicProfile }),
+    });
+    setBusy(false);
+    if (!res.ok) {
+      setError(res.error ?? t.common.error);
+      setFields(res.fields ?? {});
+      return;
+    }
+    await refresh();
+    push(t.settings.saved, "success");
   }
 
-  if (!session?.user) {
+  if (status === "loading") {
+    return <div className="mx-auto max-w-2xl px-4 py-24 text-center text-sm text-muted">{t.common.loading}</div>;
+  }
+
+  if (!user) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <p className="text-white/70">{t.nav.login}</p>
-        <Button href="/login" variant="primary" className="mt-4">
+        <p className="text-white/70">{t.settings.signInRequired}</p>
+        <Button href="/login?next=/settings" variant="primary" className="mt-4">
           {t.nav.login}
         </Button>
       </div>
@@ -43,22 +77,21 @@ export default function SettingsPage() {
 
       <Section title={t.settings.account}>
         <div className="flex items-center gap-4">
-          <UserAvatar src={session.user.image} alt={session.user.name ?? "player"} size={56} />
+          <UserAvatar src={user.avatar} alt={user.username} size={56} ring />
           <div>
-            <p className="text-sm text-white/90">{session.user.name}</p>
-            <p className="text-xs text-muted">Discord account connected</p>
+            <p className="text-sm text-white/90">{user.displayName}</p>
+            <p className="text-xs text-muted">{user.email}</p>
+            <p className="mt-1 text-[11px] text-neon-purple">{t.roles[user.role]}</p>
           </div>
         </div>
-        <label className="mt-4 block">
-          <span className="mb-1 block text-xs text-muted">{t.settings.username}</span>
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="clip-notch-sm w-full border border-surface-border bg-surface-raised px-3 py-2 text-sm text-white outline-none focus:border-neon-cyan"
-            maxLength={32}
-          />
-        </label>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <Field label={t.settings.username} value={username} onChange={setUsername} error={fields.username} />
+          <Field label={t.settings.displayName} value={displayName} onChange={setDisplayName} error={fields.displayName} />
+        </div>
+        <p className="text-[11px] text-muted">{t.settings.emailHint}</p>
       </Section>
+
+      <PasswordSection />
 
       <Section title={t.settings.appearance}>
         <Toggle label={t.settings.animations} checked={animations} onChange={setAnimations} />
@@ -70,7 +103,10 @@ export default function SettingsPage() {
           {locales.map((l) => (
             <button
               key={l}
-              onClick={() => setLocale(l)}
+              onClick={() => {
+                setLocale(l);
+                void apiFetch("/api/auth/me", { method: "PATCH", body: JSON.stringify({ locale: l }) }).then(refresh);
+              }}
               className={`clip-notch-sm px-4 py-2 text-sm transition-colors focus-ring ${
                 locale === l ? "bg-neon-purple text-white" : "border border-surface-border text-white/70"
               }`}
@@ -83,18 +119,93 @@ export default function SettingsPage() {
 
       <Section title={t.settings.privacy}>
         <Toggle label={t.settings.publicProfile} checked={publicProfile} onChange={setPublicProfile} />
-        <Toggle label={t.settings.showStats} checked={showStats} onChange={setShowStats} />
+        <Toggle label={t.settings.showStats} checked={true} onChange={() => {}} />
       </Section>
 
+      {(user.role === "moderator" || user.role === "owner") && (
+        <Section title={t.settings.staffLinks}>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/creator" className="clip-notch-sm border border-surface-border px-4 py-2 text-sm text-white/80">
+              {t.nav.creator}
+            </Link>
+            <Link href="/moderation" className="clip-notch-sm border border-surface-border px-4 py-2 text-sm text-white/80">
+              {t.nav.moderation}
+            </Link>
+            {user.role === "owner" && (
+              <Link href="/owner" className="clip-notch-sm border border-neon-purple px-4 py-2 text-sm text-neon-purple">
+                {t.nav.owner}
+              </Link>
+            )}
+          </div>
+        </Section>
+      )}
+
+      <FormError message={error} />
+
       <div className="mt-8 flex items-center gap-3">
-        <Button variant="primary" onClick={handleSave}>
-          {t.settings.save}
+        <Button variant="primary" onClick={handleSave} disabled={busy}>
+          {busy ? t.common.loading : t.settings.save}
         </Button>
-        <Button variant="ghost" onClick={() => signOut()}>
+        <Button variant="ghost" onClick={() => signOut().then(() => router.push("/"))}>
           {t.settings.logout}
         </Button>
       </div>
     </div>
+  );
+}
+
+function PasswordSection() {
+  const { t } = useLocale();
+  const { push } = useToast();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [fields, setFields] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function changePassword() {
+    setBusy(true);
+    setError(null);
+    setFields({});
+    const res = await apiFetch("/api/auth/me", {
+      method: "PUT",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    setBusy(false);
+    if (!res.ok) {
+      setError(res.error ?? t.common.error);
+      setFields(res.fields ?? {});
+      return;
+    }
+    setCurrentPassword("");
+    setNewPassword("");
+    push(t.settings.passwordChanged, "success");
+  }
+
+  return (
+    <Section title={t.settings.changePassword}>
+      <Field
+        label={t.settings.currentPassword}
+        type="password"
+        value={currentPassword}
+        onChange={setCurrentPassword}
+        autoComplete="current-password"
+        error={fields.currentPassword}
+      />
+      <Field
+        label={t.settings.newPassword}
+        type="password"
+        value={newPassword}
+        onChange={setNewPassword}
+        autoComplete="new-password"
+        hint={t.auth.passwordHint}
+        error={fields.newPassword}
+      />
+      <FormError message={error} />
+      <Button variant="secondary" onClick={changePassword} disabled={busy || !currentPassword || !newPassword}>
+        {busy ? t.common.loading : t.settings.updatePassword}
+      </Button>
+    </Section>
   );
 }
 

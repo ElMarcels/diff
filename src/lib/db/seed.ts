@@ -4,9 +4,12 @@ import { achievements, games } from "./schema";
 import { MOCK_ACHIEVEMENTS, MOCK_GAMES } from "../mock-data";
 
 /**
- * Run with: npx tsx src/lib/db/seed.ts
+ * Run with: npm run db:seed
  * Populates the `games` and `achievements` reference tables. Safe to
  * re-run — uses onConflictDoNothing keyed on the unique slug column.
+ *
+ * Built-in games are marked `source: "builtin"` with no `playUrl`, which is
+ * what makes /games render them as in-platform React routes.
  */
 async function main() {
   const url = process.env.DATABASE_URL;
@@ -20,8 +23,29 @@ async function main() {
   for (const g of MOCK_GAMES) {
     await db
       .insert(games)
-      .values({ slug: g.slug, name: g.name, description: g.description, enabled: g.enabled })
-      .onConflictDoNothing({ target: games.slug });
+      .values({
+        slug: g.slug,
+        name: g.name,
+        description: g.description,
+        tagline: g.tagline,
+        category: g.type,
+        difficulty: g.difficulty,
+        players: g.players,
+        enabled: g.enabled,
+        source: "builtin",
+      })
+      .onConflictDoUpdate({
+        target: games.slug,
+        set: {
+          name: g.name,
+          description: g.description,
+          tagline: g.tagline,
+          category: g.type,
+          difficulty: g.difficulty,
+          players: g.players,
+          source: "builtin",
+        },
+      });
   }
 
   for (const a of MOCK_ACHIEVEMENTS) {

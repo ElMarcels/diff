@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Press_Start_2P } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "@/components/providers/SessionProvider";
+import { AuthProvider } from "@/lib/auth/client";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${pressStart.variable}`}>
       <body className="font-sans antialiased flex min-h-dvh flex-col bg-black">
-        <SessionProvider>
+        <AuthProvider>
           <LocaleProvider>
             <ToastProvider>
               <Navbar />
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </ToastProvider>
           </LocaleProvider>
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

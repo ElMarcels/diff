@@ -20,7 +20,9 @@ export function UserAvatar({
       style={{ width: size, height: size }}
     >
       {src ? (
-        <Image src={src} alt={alt} fill sizes={`${size}px`} className="object-cover" />
+        // `unoptimized` keeps arbitrary avatar hosts working without having to
+        // allow-list every CDN in next.config.js.
+        <Image src={src} alt={alt} fill sizes={`${size}px`} unoptimized className="object-cover" />
       ) : (
         <span>{initials}</span>
       )}

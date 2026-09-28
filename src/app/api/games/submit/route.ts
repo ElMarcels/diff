@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth/session";
 import { getDb, isDbConfigured } from "@/lib/db/client";
 import { validateScore } from "@/lib/services/validate-score";
 import { xpForResult } from "@/lib/xp";
@@ -17,10 +16,11 @@ import { SubmitScorePayload } from "@/types";
  * updates gameStats / awards XP.
  */
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const user = await getSessionUser();
+  if (!user) {
     return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   }
+  const userId = user.id;
 
   let payload: SubmitScorePayload;
   try {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
   await db.transaction(async (tx) => {
     await tx.insert(gameSessions).values({
-      userId: session.user.id,
+      userId: userId,
       gameId: game.id,
       score: payload.score,
       result: payload.result,
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     const existing = await tx
       .select()
       .from(gameStats)
-      .where(and(eq(gameStats.userId, session.user.id), eq(gameStats.gameId, game.id)));
+      .where(and(eq(gameStats.userId, userId), eq(gameStats.gameId, game.id)));
 
     const isWin = payload.result === "win";
     const isLoss = payload.result === "loss";
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
     if (existing.length === 0) {
       await tx.insert(gameStats).values({
-        userId: session.user.id,
+        userId: userId,
         gameId: game.id,
         gamesPlayed: 1,
         wins: isWin ? 1 : 0,
@@ -94,13 +94,13 @@ export async function POST(req: NextRequest) {
           winStreak: newStreak,
           bestWinStreak: Math.max(s.bestWinStreak, newStreak),
         })
-        .where(and(eq(gameStats.userId, session.user.id), eq(gameStats.gameId, game.id)));
+        .where(and(eq(gameStats.userId, userId), eq(gameStats.gameId, game.id)));
     }
 
     await tx
       .update(users)
       .set({ xp: sql`${users.xp} + ${xpGain}` })
-      .where(eq(users.id, session.user.id));
+      .where(eq(users.id, userId));
   });
 
   return NextResponse.json({ ok: true, persisted: true, xpGain });

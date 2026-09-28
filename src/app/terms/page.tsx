@@ -11,7 +11,14 @@ export default function TermsPage() {
           (multiplayer, tournaments, seasons, cosmetics) are not guaranteed delivery dates.
         </p>
         <p>
-          You must comply with Discord&apos;s own Terms of Service when using Discord to sign in to DIFF.
+          When you submit a game for review you keep ownership of your work and confirm that you have
+          the right to publish it. You grant the platform permission to host, link and feature the
+          submitted build on DIFF. Moderators may reject submissions that are broken, unsafe, plagiarised
+          or off-topic; asking for changes is not a guarantee of publication.
+        </p>
+        <p>
+          Accounts are personal. Sharing credentials, or automating score submission, may result in
+          suspension.
         </p>
         <p className="text-xs text-muted">
           This is a template policy for the DIFF v1.0 scaffold — review it with counsel before shipping

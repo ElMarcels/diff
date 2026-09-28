@@ -58,10 +58,11 @@ export const MOCK_LEADERBOARD_CONNECT4: LeaderboardEntry[] = [
 export function mockUser(username: string): DiffUser {
   return {
     id: "mock-1",
-    discordId: "000000000000000000",
+    email: "player@diff.gg",
     username,
     displayName: username,
     avatar: null,
+    role: "user",
     createdAt: "2026-01-12T00:00:00.000Z",
     lastLogin: new Date().toISOString(),
     xp: 1280,

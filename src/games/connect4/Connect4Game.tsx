@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/client";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/Button";
@@ -10,7 +10,7 @@ import { Board, COLS, ROWS, checkWinner, createBoard, dropPiece, getCpuMove, isB
 
 export function Connect4Game() {
   const { t } = useLocale();
-  const { data: session } = useSession();
+  const { user } = useSession();
   const { push } = useToast();
 
   const [difficulty, setDifficulty] = useState<Difficulty>("normal");
@@ -76,7 +76,7 @@ export function Connect4Game() {
     else if (winner === 2) push(t.connect4.cpuWins, "error");
     else push(t.connect4.draw, "info");
 
-    if (!session?.user) return;
+    if (!user) return;
     fetch("/api/games/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ export function Connect4Game() {
       })
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [winner]);
+  }, [winner, user]);
 
   return (
     <div className="flex flex-col items-center gap-5">
