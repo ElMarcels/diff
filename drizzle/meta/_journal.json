@@ -22,6 +22,13 @@
       "when": 1790602207198,
       "tag": "0002_drop_legacy_discord_id",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791047001160,
+      "tag": "0003_game_sessions_created_at_idx",
+      "breakpoints": true
     }
   ]
 }

@@ -5,10 +5,17 @@ import { Button } from "@/components/Button";
 import { GameGrid } from "@/components/GameGrid";
 import { DatabaseNotice } from "@/components/games/DatabaseNotice";
 import { Leaderboard } from "@/components/Leaderboard";
-import { MOCK_LEADERBOARD_SNAKE } from "@/lib/mock-data";
-import { GameMeta } from "@/types";
+import { GameMeta, LeaderboardEntry } from "@/types";
 
-export default function HomePage({ games, dbError }: { games: GameMeta[]; dbError?: string | null }) {
+export default function HomePage({
+  games,
+  dbError,
+  leaders,
+}: {
+  games: GameMeta[];
+  dbError?: string | null;
+  leaders: LeaderboardEntry[];
+}) {
   const { t } = useLocale();
 
   return (
@@ -52,7 +59,7 @@ export default function HomePage({ games, dbError }: { games: GameMeta[]; dbErro
       {/* Leaderboard preview */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <h2 className="mb-6 text-lg font-semibold text-white">{t.home.topPlayers}</h2>
-        <Leaderboard entries={MOCK_LEADERBOARD_SNAKE} valueLabel="High Score" />
+        <Leaderboard entries={leaders} valueLabel={t.leaderboards.totalScore} t={t} />
       </section>
 
       {/* CTA */}

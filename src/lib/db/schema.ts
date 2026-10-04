@@ -107,21 +107,29 @@ export const gameStats = pgTable(
   })
 );
 
-export const gameSessions = pgTable("game_sessions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  gameId: uuid("game_id")
-    .notNull()
-    .references(() => games.id, { onDelete: "cascade" }),
-  score: integer("score").default(0).notNull(),
-  result: varchar("result", { length: 8 }).notNull(), // "win" | "loss" | "draw" | "n/a"
-  difficulty: varchar("difficulty", { length: 8 }), // "easy" | "normal" | "hard"
-  durationMs: integer("duration_ms").default(0).notNull(),
-  metadata: text("metadata"), // JSON-encoded, game-specific
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const gameSessions = pgTable(
+  "game_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+    score: integer("score").default(0).notNull(),
+    result: varchar("result", { length: 8 }).notNull(), // "win" | "loss" | "draw" | "n/a"
+    difficulty: varchar("difficulty", { length: 8 }), // "easy" | "normal" | "hard"
+    durationMs: integer("duration_ms").default(0).notNull(),
+    metadata: text("metadata"), // JSON-encoded, game-specific
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    // Weekly/monthly leaderboards filter by time window; without this index
+    // that aggregate is a sequential scan.
+    createdAtIdx: index("game_sessions_created_at_idx").on(t.createdAt),
+  })
+);
 
 export const achievements = pgTable("achievements", {
   id: uuid("id").defaultRandom().primaryKey(),

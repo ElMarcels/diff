@@ -40,19 +40,19 @@ export const MOCK_ACHIEVEMENTS: Achievement[] = [
 ];
 
 export const MOCK_LEADERBOARD_SNAKE: LeaderboardEntry[] = [
-  { rank: 1, userId: "1", username: "PlayerOne", avatar: null, value: 340, trend: "same" },
-  { rank: 2, userId: "2", username: "PixelMaster", avatar: null, value: 298, trend: "up" },
-  { rank: 3, userId: "3", username: "RetroKing", avatar: null, value: 271, trend: "down" },
-  { rank: 4, userId: "4", username: "NeonGhost", avatar: null, value: 210, trend: "up" },
-  { rank: 5, userId: "5", username: "ByteRunner", avatar: null, value: 198, trend: "same" },
+  { rank: 1, userId: "1", username: "PlayerOne", avatar: null, value: 340, gamesPlayed: 24 },
+  { rank: 2, userId: "2", username: "PixelMaster", avatar: null, value: 298, gamesPlayed: 19 },
+  { rank: 3, userId: "3", username: "RetroKing", avatar: null, value: 271, gamesPlayed: 17 },
+  { rank: 4, userId: "4", username: "NeonGhost", avatar: null, value: 210, gamesPlayed: 12 },
+  { rank: 5, userId: "5", username: "ByteRunner", avatar: null, value: 198, gamesPlayed: 11 },
 ];
 
 export const MOCK_LEADERBOARD_CONNECT4: LeaderboardEntry[] = [
-  { rank: 1, userId: "2", username: "PixelMaster", avatar: null, value: 42, trend: "up" },
-  { rank: 2, userId: "3", username: "RetroKing", avatar: null, value: 37, trend: "same" },
-  { rank: 3, userId: "1", username: "PlayerOne", avatar: null, value: 33, trend: "down" },
-  { rank: 4, userId: "6", username: "ArcadeQueen", avatar: null, value: 29, trend: "up" },
-  { rank: 5, userId: "4", username: "NeonGhost", avatar: null, value: 22, trend: "same" },
+  { rank: 1, userId: "2", username: "PixelMaster", avatar: null, value: 42, gamesPlayed: 51 },
+  { rank: 2, userId: "3", username: "RetroKing", avatar: null, value: 37, gamesPlayed: 46 },
+  { rank: 3, userId: "1", username: "PlayerOne", avatar: null, value: 33, gamesPlayed: 40 },
+  { rank: 4, userId: "6", username: "ArcadeQueen", avatar: null, value: 29, gamesPlayed: 35 },
+  { rank: 5, userId: "4", username: "NeonGhost", avatar: null, value: 22, gamesPlayed: 28 },
 ];
 
 export function mockUser(username: string): DiffUser {
@@ -76,7 +76,7 @@ export function mockUser(username: string): DiffUser {
 
 export function mockStats(): GameStats[] {
   return [
-    { gameSlug: "snake", gamesPlayed: 41, wins: 0, losses: 0, draws: 0, highScore: 156, totalScore: 3210, winStreak: 0, bestWinStreak: 0 },
-    { gameSlug: "connect4", gamesPlayed: 28, wins: 19, losses: 8, draws: 1, highScore: 0, totalScore: 0, winStreak: 3, bestWinStreak: 6 },
+    { gameSlug: "snake", gameName: "Snake", gamesPlayed: 41, wins: 0, losses: 0, draws: 0, highScore: 156, totalScore: 3210, winStreak: 0, bestWinStreak: 0 },
+    { gameSlug: "connect4", gameName: "Connect 4", gamesPlayed: 28, wins: 19, losses: 8, draws: 1, highScore: 0, totalScore: 0, winStreak: 3, bestWinStreak: 6 },
   ];
 }

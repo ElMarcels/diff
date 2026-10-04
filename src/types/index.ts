@@ -23,6 +23,8 @@ export interface DiffUser {
 
 export interface GameStats {
   gameSlug: GameSlug;
+  /** Display name of the game, so the UI never hardcodes "Snake"/"Connect 4". */
+  gameName: string;
   gamesPlayed: number;
   wins: number;
   losses: number;
@@ -59,12 +61,20 @@ export interface UnlockedAchievement extends Achievement {
   unlockedAt: string;
 }
 
+/** Rolling windows the leaderboard can rank. `all` reads lifetime `game_stats`. */
+export type LeaderboardPeriod = "all" | "weekly" | "monthly";
+
+/** Columns/aggregates a leaderboard can rank by. See lib/stats/metrics.ts. */
+export type LeaderboardMetric = "highScore" | "wins" | "gamesPlayed" | "totalScore";
+
 export interface LeaderboardEntry {
   rank: number;
   userId: string;
   username: string;
   avatar: string | null;
   value: number;
+  /** Matches played in the queried scope, shown next to the ranked value. */
+  gamesPlayed: number;
   trend?: "up" | "down" | "same";
 }
 

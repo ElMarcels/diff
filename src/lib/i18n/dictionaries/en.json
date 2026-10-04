@@ -108,7 +108,11 @@
     "player": "Player",
     "highScore": "High Score",
     "wins": "Wins",
-    "winRate": "Win Rate"
+    "winRate": "Win Rate",
+    "gamesPlayed": "Games played",
+    "totalScore": "Total score",
+    "you": "you",
+    "empty": "No scores yet. Be the first on the board."
   },
   "profile": {
     "joined": "Joined",

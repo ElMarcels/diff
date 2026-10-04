@@ -108,7 +108,11 @@
     "player": "Jugador",
     "highScore": "Mejor puntuación",
     "wins": "Victorias",
-    "winRate": "% Victorias"
+    "winRate": "% Victorias",
+    "gamesPlayed": "Partidas jugadas",
+    "totalScore": "Puntuación total",
+    "you": "tú",
+    "empty": "Todavía no hay puntuaciones. Sé el primero en el ranking."
   },
   "profile": {
     "joined": "Se unió",
